@@ -9,8 +9,21 @@ const config: Config = {
   theme: {
     extend: {
       colors: {
+        primary: "#FFB61D",
+        secondary: "#FFB61D",
+        tertiary: "#5F6368",
         background: "var(--background)",
         foreground: "var(--foreground)",
+        textColor: {
+          primary: "#000000",
+          secondary: "#555555",
+        },
+        danger: "#DB0821",
+        colorStatus: {
+          toDo: "#5F6368",
+          inProgress: "#FFB61D",
+          done: "#1EC360"
+        }
       },
     },
   },
