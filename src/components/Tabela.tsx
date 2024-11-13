@@ -1,60 +1,66 @@
-// Tabela.tsx
 import React from "react";
-import { FaTrash, FaEdit, FaPlus } from "react-icons/fa";
-
-interface LinhaTabela {
-  nome: string;
-  descricao: string;
-  cliente: string;
-  time: string;
-  inicio: string;
-  final: string;
-}
+import { LinhaTabela } from "@/app/page";
+import { FaEdit, FaEye, FaTrashAlt } from "react-icons/fa";
 
 interface TabelaProps {
   dados: LinhaTabela[];
   onEditClick: (projeto: LinhaTabela) => void;
+  onDeleteClick: (projeto: LinhaTabela) => void;
+  onDetailClick: (projeto: LinhaTabela) => void;
 }
 
-const Tabela: React.FC<TabelaProps> = ({ dados, onEditClick }) => {
+const Tabela: React.FC<TabelaProps> = ({ dados, onEditClick, onDeleteClick, onDetailClick }) => {
   return (
-    <table className="min-w-full bg-white">
-      <thead>
-        <tr>
-          <th className="py-2">Nome do Projeto</th>
-          <th className="py-2">Cliente</th>
-          <th className="py-2">Time</th>
-          <th className="py-2">Data de Início</th>
-          <th className="py-2">Data Final</th>
-          <th className="py-2">Ações</th>
-        </tr>
-      </thead>
-      <tbody>
-        {dados.map((projeto, index) => (
-          <tr key={index} className="border-b">
-            <td className="py-2">{projeto.nome}</td>
-            <td className="py-2">{projeto.cliente}</td>
-            <td className="py-2">{projeto.time}</td>
-            <td className="py-2">{new Date(projeto.inicio).toLocaleDateString("pt-BR")}</td>
-            <td className="py-2">{projeto.final === "N/A" ? "N/A" : new Date(projeto.final).toLocaleDateString("pt-BR")}</td>
-            <td className="py-2 flex space-x-2">
-              <button
-                className="text-blue-500 hover:text-blue-700"
-                onClick={() => onEditClick(projeto)}
-              >
-                <FaEdit />
-              </button>
-              <button className="text-red-500 hover:text-red-700">
-                <FaTrash />
-              </button>
-              <button className="text-green-500 hover:text-green-700">
-                <FaPlus />
-              </button>
-            </td>
+    <div className="overflow-x-auto shadow-lg rounded-lg">
+      <table className="min-w-full bg-white rounded-lg overflow-hidden border border-gray-200">
+        <thead style={{ backgroundColor: "#5F6368" }}>
+          <tr>
+            <th className="px-6 py-3 text-center text-sm font-bold text-white uppercase tracking-wider">Nome</th>
+            <th className="px-6 py-3 text-center text-sm font-bold text-white uppercase tracking-wider">Descrição</th>
+            <th className="px-6 py-3 text-center text-sm font-bold text-white uppercase tracking-wider">Cliente</th>
+            <th className="px-6 py-3 text-center text-sm font-bold text-white uppercase tracking-wider">Time</th>
+            <th className="px-6 py-3 text-center text-sm font-bold text-white uppercase tracking-wider">Início</th>
+            <th className="px-6 py-3 text-center text-sm font-bold text-white uppercase tracking-wider">Final</th>
+            <th className="px-6 py-3 text-center text-sm font-bold text-white uppercase tracking-wider">Ações</th>
           </tr>
-        ))}
-      </tbody>
-    </table>
+        </thead>
+        <tbody className="bg-white divide-y divide-gray-200">
+          {dados.map((item) => (
+            <tr key={item.nome}>
+              <td className="px-6 py-4 whitespace-nowrap text-sm font-bold text-customYellow text-center">{item.nome}</td>
+              <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-700 text-center">{item.descricao}</td>
+              <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-700 text-center">{item.cliente}</td>
+              <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-700 text-center">{item.time}</td>
+              <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-700 text-center">{item.inicio}</td>
+              <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-700 text-center">{item.final}</td>
+              <td className="px-6 py-4 whitespace-nowrap text-center text-sm font-medium flex justify-center space-x-2">
+                <button
+                  onClick={() => onEditClick(item)}
+                  className="text-white bg-customYellow hover:bg-yellow-600 px-3 py-2 rounded-md transition duration-150"
+                  title="Editar"
+                >
+                  <FaEdit />
+                </button>
+                <button
+                  onClick={() => onDetailClick(item)}
+                  className="text-white bg-blue-500 hover:bg-blue-700 px-3 py-2 rounded-md transition duration-150"
+                  title="Detalhes"
+                >
+                  <FaEye />
+                </button>
+                <button
+                  onClick={() => onDeleteClick(item)}
+                  className="text-white bg-red-500 hover:bg-red-700 px-3 py-2 rounded-md transition duration-150"
+                  title="Excluir"
+                >
+                  <FaTrashAlt />
+                </button>
+              </td>
+            </tr>
+          ))}
+        </tbody>
+      </table>
+    </div>
   );
 };
 

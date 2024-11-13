@@ -8,10 +8,15 @@ const config: Config = {
   ],
   theme: {
     extend: {
+      fontFamily: {
+        poppins: ['Poppins', 'sans-serif'],
+      },
       colors: {
         primary: "#FFB61D",
         secondary: "#555555",
         tertiary: "#5F6368",
+        customYellow: '#FFB61D', // Customize color names as needed
+        customGray: '#555555',
         background: "var(--background)",
         foreground: "var(--foreground)",
         textColor: {
