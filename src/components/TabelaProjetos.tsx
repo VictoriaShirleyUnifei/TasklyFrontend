@@ -1,6 +1,8 @@
+"use client";
 import React from "react";
 import { LinhaTabela } from "@/app/page";
 import { FaEdit, FaTrashAlt, FaEye } from "react-icons/fa";
+import { useRouter } from "next/navigation"; // Importe useRouter
 
 interface TabelaProps {
   dados: LinhaTabela[];
@@ -10,6 +12,8 @@ interface TabelaProps {
 }
 
 const Tabela: React.FC<TabelaProps> = ({ dados, onEditClick, onDeleteClick, onDetailClick }) => {
+  const router = useRouter(); // Use o hook useRouter
+
   return (
     <div className="overflow-x-auto shadow-lg rounded-lg">
       <table className="min-w-full bg-white rounded-lg overflow-hidden border border-gray-200">
@@ -27,10 +31,9 @@ const Tabela: React.FC<TabelaProps> = ({ dados, onEditClick, onDeleteClick, onDe
         <tbody className="bg-white divide-y divide-gray-200">
           {dados.map((item) => (
             <tr key={item.nome}>
-              {/* Célula de Nome do Projeto - Agora clicável */}
               <td
                 className="px-6 py-4 whitespace-nowrap text-sm font-bold text-customYellow text-center cursor-pointer"
-                onClick={() => onDetailClick(item)} // Abre o modal de detalhes ao clicar no nome
+                onClick={() => onDetailClick(item)}
               >
                 {item.nome}
               </td>
@@ -42,7 +45,7 @@ const Tabela: React.FC<TabelaProps> = ({ dados, onEditClick, onDeleteClick, onDe
               <td className="px-6 py-4 whitespace-nowrap text-center text-sm font-medium flex justify-center space-x-2">
                 <button
                   onClick={(e) => {
-                    e.stopPropagation(); // Impede que o clique no botão acione o clique no nome
+                    e.stopPropagation();
                     onEditClick(item);
                   }}
                   className="text-white bg-customYellow hover:bg-yellow-600 px-3 py-2 rounded-md transition duration-150"
@@ -51,10 +54,7 @@ const Tabela: React.FC<TabelaProps> = ({ dados, onEditClick, onDeleteClick, onDe
                   <FaEdit />
                 </button>
                 <button
-                  onClick={(e) => {
-                    e.stopPropagation(); // Impede que o clique no botão acione o clique no nome
-                    onDetailClick(item);
-                  }}
+                  onClick={() => router.push(`/projetos/${item.nome}`)}
                   className="text-white bg-blue-500 hover:bg-blue-700 px-3 py-2 rounded-md transition duration-150"
                   title="Detalhes"
                 >
@@ -62,7 +62,7 @@ const Tabela: React.FC<TabelaProps> = ({ dados, onEditClick, onDeleteClick, onDe
                 </button>
                 <button
                   onClick={(e) => {
-                    e.stopPropagation(); // Impede que o clique no botão acione o clique no nome
+                    e.stopPropagation();
                     onDeleteClick(item);
                   }}
                   className="text-white bg-red-500 hover:bg-red-700 px-3 py-2 rounded-md transition duration-150"

@@ -23,6 +23,15 @@ interface Tarefa {
   prazo: string;
 }
 
+export interface LinhaTabela {
+  nome: string;
+  descricao: string;
+  cliente: string;
+  time: string;
+  inicio: string;
+  final: string;
+}
+
 const App: React.FC = () => {
   const [textoFiltro, definirTextoFiltro] = useState<string>("");
   const [dados, setDados] = useState<LinhaTabela[]>([
@@ -247,7 +256,7 @@ const App: React.FC = () => {
         </div>
       </div>
       <Footer />
-      {showToast && <Toast message={toastMessage} />}
+      {showToast && <Toast message={toastMessage} show={false} />}
     </div>
   );
 };

@@ -1,6 +1,11 @@
 import React, { useState } from 'react';
 import Toast from './Toast';
 
+interface ToastProps {
+  message: string;
+  onClose: () => void; // Adicione esta linha se a propriedade onClose for necessária
+}
+
 interface Project {
   id: string;
   nome: string;
@@ -56,7 +61,7 @@ const EditProjectModal: React.FC<EditProjectModalProps> = ({ project, existingPr
 
   return (
     <div>
-      {successMessage && <Toast message={successMessage} onClose={() => setSuccessMessage(null)} />}
+      {successMessage && <Toast message={successMessage} show={false}  />}
 
       <div className="fixed inset-0 flex items-center justify-center bg-gray-800 bg-opacity-50 z-40">
         <div className="bg-white rounded-lg shadow-lg p-8 w-full max-w-md">
