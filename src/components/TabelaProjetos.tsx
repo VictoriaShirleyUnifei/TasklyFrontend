@@ -1,8 +1,8 @@
 "use client";
 import React from "react";
-import { LinhaTabela } from "@/app/page";
 import { FaEdit, FaTrashAlt, FaEye } from "react-icons/fa";
 import { useRouter } from "next/navigation"; // Importe useRouter
+import { LinhaTabela } from "@/app/projetos/page";
 
 interface TabelaProps {
   dados: LinhaTabela[];

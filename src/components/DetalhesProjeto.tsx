@@ -1,7 +1,7 @@
 // src/components/DetalhesProjeto.tsx
 
 import React, { useState } from "react";
-import ModalIncluirTarefa from "./ModalIncluirTarefa";
+import ModalIncluirTarefa from "./ModalIncluirTarefas";
 
 interface Tarefa {
   id: string;
@@ -58,7 +58,7 @@ const DetalhesProjeto: React.FC<DetalhesProjetoProps> = ({ projeto, onClose, onA
         </button>
 
         {isModalOpen && (
-          <ModalIncluirTarefa onClose={() => setIsModalOpen(false)} onSave={handleAddTarefa} />
+          <ModalIncluirTarefa onClose={() => setIsModalOpen(false)} onSave={handleAddTarefa} tarefa={undefined} />
         )}
       </div>
     </div>

@@ -8,13 +8,14 @@ const statusStyles = {
   Concluída: "bg-green-200 text-green-800",
 };
 
-interface Tarefa {
+export interface Tarefa {
   id: number;
   titulo: string;
   descricao?: string;
-  prazo: string;
   responsavel: string;
   status: string;
+  prazo: string;
+  projeto: string; // Propriedade obrigatória
 }
 
 interface TabelaTarefasProps {
@@ -24,6 +25,7 @@ interface TabelaTarefasProps {
   onEdit: (tarefa: Tarefa) => void;
   onView: (tarefa: Tarefa) => void;
 }
+
 
 const TabelaTarefas: React.FC<TabelaTarefasProps> = ({
   tarefas,
@@ -39,9 +41,13 @@ const TabelaTarefas: React.FC<TabelaTarefasProps> = ({
     prazo: "",
     responsavel: "",
     status: "Pendente",
+    projeto: "", // Adicione esta linha
   });
+  
 
-  const [tarefaParaExcluir, setTarefaParaExcluir] = useState<Tarefa | null>(null);
+  const [tarefaParaExcluir, setTarefaParaExcluir] = useState<Tarefa | null>(
+    null
+  );
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [isIncludeModalOpen, setIsIncludeModalOpen] = useState(false);
 
@@ -83,7 +89,7 @@ const TabelaTarefas: React.FC<TabelaTarefasProps> = ({
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
     if (novaTarefa.titulo && novaTarefa.prazo && novaTarefa.responsavel) {
-      onAdd({ ...novaTarefa, id: Date.now() });
+      onAdd({ ...novaTarefa, id: Date.now(), projeto: "NomeDoProjeto" }); // Inclua o nome do projeto
       setNovaTarefa({
         id: 0,
         titulo: "",
@@ -91,40 +97,64 @@ const TabelaTarefas: React.FC<TabelaTarefasProps> = ({
         prazo: "",
         responsavel: "",
         status: "Pendente",
+        projeto: "", // Reinicialize com um valor padrão
       });
       closeIncludeModal();
     } else {
       alert("Por favor, preencha todos os campos obrigatórios.");
     }
   };
+  
 
   return (
     <div className="relative overflow-x-auto rounded-lg shadow-lg bg-white p-4">
       <table className="min-w-full bg-white">
         <thead>
           <tr>
-            <th className="px-4 py-2 text-left text-sm font-bold text-gray-700 bg-gray-200 border-b">Título</th>
-            <th className="px-4 py-2 text-left text-sm font-bold text-gray-700 bg-gray-200 border-b">Descrição</th>
-            <th className="px-4 py-2 text-left text-sm font-bold text-gray-700 bg-gray-200 border-b">Status</th>
-            <th className="px-4 py-2 text-left text-sm font-bold text-gray-700 bg-gray-200 border-b">Prazo</th>
-            <th className="px-4 py-2 text-left text-sm font-bold text-gray-700 bg-gray-200 border-b">Responsável</th>
-            <th className="px-4 py-2 text-center text-sm font-bold text-gray-700 bg-gray-200 border-b">Ações</th>
+            <th className="px-4 py-2 text-left text-sm font-bold text-gray-700 bg-gray-200 border-b">
+              Título
+            </th>
+            <th className="px-4 py-2 text-left text-sm font-bold text-gray-700 bg-gray-200 border-b">
+              Descrição
+            </th>
+            <th className="px-4 py-2 text-left text-sm font-bold text-gray-700 bg-gray-200 border-b">
+              Status
+            </th>
+            <th className="px-4 py-2 text-left text-sm font-bold text-gray-700 bg-gray-200 border-b">
+              Prazo
+            </th>
+            <th className="px-4 py-2 text-left text-sm font-bold text-gray-700 bg-gray-200 border-b">
+              Responsável
+            </th>
+            <th className="px-4 py-2 text-center text-sm font-bold text-gray-700 bg-gray-200 border-b">
+              Ações
+            </th>
           </tr>
         </thead>
         <tbody>
           {tarefas.map((tarefa) => (
             <tr key={tarefa.id} className="border-b">
-              <td className="px-4 py-2 text-sm text-gray-800">{tarefa.titulo}</td>
-              <td className="px-4 py-2 text-sm text-gray-800">{tarefa.descricao}</td>
+              <td className="px-4 py-2 text-sm text-gray-800">
+                {tarefa.titulo}
+              </td>
+              <td className="px-4 py-2 text-sm text-gray-800">
+                {tarefa.descricao}
+              </td>
               <td className="px-4 py-2">
                 <span
-                  className={`px-2 py-1 rounded-full text-xs font-semibold ${statusStyles[tarefa.status]}`}
+                  className={`px-2 py-1 rounded-full text-xs font-semibold ${
+                    statusStyles[tarefa.status as keyof typeof statusStyles]
+                  }`}
                 >
                   {tarefa.status}
                 </span>
               </td>
-              <td className="px-4 py-2 text-sm text-gray-800">{tarefa.prazo}</td>
-              <td className="px-4 py-2 text-sm text-gray-800">{tarefa.responsavel}</td>
+              <td className="px-4 py-2 text-sm text-gray-800">
+                {tarefa.prazo}
+              </td>
+              <td className="px-4 py-2 text-sm text-gray-800">
+                {tarefa.responsavel}
+              </td>
               <td className="px-4 py-2 text-center space-x-2">
                 <button
                   onClick={() => onEdit(tarefa)}
@@ -132,12 +162,15 @@ const TabelaTarefas: React.FC<TabelaTarefasProps> = ({
                 >
                   <FaEdit />
                 </button>
-                <button
+                {
+                  /*
+                   <button
                   onClick={() => onView(tarefa)}
                   className="text-blue-500 hover:text-blue-700 transition-colors duration-200"
                 >
                   <FaEye />
-                </button>
+                </button>*/ 
+                }
                 <button
                   onClick={() => openModal(tarefa)}
                   className="text-red-500 hover:text-red-700 transition-colors duration-200"

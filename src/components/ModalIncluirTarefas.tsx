@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import { Tarefa } from "./Tarefa";
+import { Tarefa } from "./TabelaTarefas";
 
 interface ModalIncluirTarefaProps {
   onClose: () => void;
@@ -20,7 +20,7 @@ const ModalIncluirTarefa: React.FC<ModalIncluirTarefaProps> = ({
 
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>) => {
     const { name, value } = e.target;
-    setNovaTarefa((prev) => ({ ...prev, [name]: value }));
+    setNovaTarefa((prev: Tarefa) => ({ ...prev, [name]: value })); // Tipagem explícita
   };
 
   const handleSave = () => {

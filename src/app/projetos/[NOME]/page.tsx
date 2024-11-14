@@ -2,6 +2,7 @@
 import BaseLayout from "@/components/BaseLayout";
 import { useParams } from "next/navigation";
 import React, { useState, useEffect } from "react";
+import dayjs from "dayjs"; // Import dayjs para formatação de datas
 import TabelaTarefas from "@/components/TabelaTarefas";
 import Toast from "@/components/Toast";
 import { FiSearch } from "react-icons/fi";
@@ -44,9 +45,30 @@ export default function DetalhesProjeto() {
 
   useEffect(() => {
     const tarefasMock: Tarefa[] = [
-      { id: 1, titulo: "Análise de Requisitos", responsavel: "Ana", status: "Concluída", prazo: "2023-05-20", projeto: "Projeto A" },
-      { id: 2, titulo: "Desenvolvimento", responsavel: "Carlos", status: "Em andamento", prazo: "2023-07-15", projeto: "Projeto B" },
-      { id: 3, titulo: "Testes", responsavel: "Beatriz", status: "Pendente", prazo: "2023-08-01", projeto: "Projeto C" },
+      {
+        id: 1,
+        titulo: "Análise de Requisitos",
+        responsavel: "Ana",
+        status: "Concluída",
+        prazo: dayjs("2023-05-20").format("DD/MM/YYYY"), // Formata a data
+        projeto: "Projeto A",
+      },
+      {
+        id: 2,
+        titulo: "Desenvolvimento",
+        responsavel: "Carlos",
+        status: "Em andamento",
+        prazo: dayjs("2023-07-15").format("DD/MM/YYYY"), // Formata a data
+        projeto: "Projeto B",
+      },
+      {
+        id: 3,
+        titulo: "Testes",
+        responsavel: "Beatriz",
+        status: "Pendente",
+        prazo: dayjs("2023-08-01").format("DD/MM/YYYY"), // Formata a data
+        projeto: "Projeto C",
+      },
     ];
 
     setTarefas(tarefasMock);
@@ -85,17 +107,18 @@ export default function DetalhesProjeto() {
     setShowAddForm(false);
   };
 
-  const handleSaveEdits = () => {
-    if (tarefaAtual) {
-      setTarefas((prevTarefas) =>
-        prevTarefas.map((tarefa) => (tarefa.id === tarefaAtual!.id ? tarefaAtual : tarefa))
-      );
-      setTarefaAtual(null);
-      setShowEditModal(false);
-      setShowToast({ message: "Edição salva com sucesso!", show: true });
-      setTimeout(() => setShowToast({ message: "", show: false }), 3000);
-    }
+  const handleSaveEdits = (updatedTarefa: Tarefa) => {
+    setTarefas((prevTarefas) =>
+      prevTarefas.map((tarefa) =>
+        tarefa.id === updatedTarefa.id ? updatedTarefa : tarefa
+      )
+    );
+    setTarefaAtual(null);
+    setShowEditModal(false);
+    setShowToast({ message: "Edição salva com sucesso!", show: true });
+    setTimeout(() => setShowToast({ message: "", show: false }), 3000);
   };
+  
 
   const handleCancelAdd = () => {
     setNovaTarefa({ id: 0, titulo: "", descricao: "", responsavel: "", status: "", prazo: "", projeto: nomeProjetoDecodificado });
@@ -124,9 +147,9 @@ export default function DetalhesProjeto() {
     .sort((a, b) => (a.prazo < b.prazo ? -1 : a.prazo > b.prazo ? 1 : a.status.localeCompare(b.status)));
 
   return (
-    <BaseLayout title={`Detalhes do Projeto: ${nomeProjetoDecodificado}`}>
-      <div className="p-8">
-        <h2 className="text-2xl font-bold mb-6 text-blue-600">Tarefas do Projeto: {nomeProjetoDecodificado}</h2>
+    <BaseLayout title={`${nomeProjetoDecodificado}`}>
+      <div className="py-4">
+        <h2 className="text-2xl font-bold mb-6 text-primary">Tarefas do Projeto</h2>
 
         <div className="flex items-center border rounded p-2 mb-4 bg-gray-100">
           <FiSearch className="mr-2 text-gray-400" />
@@ -175,7 +198,7 @@ export default function DetalhesProjeto() {
             onView={(tarefa) => console.log("Visualizar tarefa:", tarefa)}
           />
         ) : (
-          <p>Não há tarefas que correspondam aos filtros aplicados.</p>
+          <p></p>
         )}
 
         {/* Formulário para adicionar tarefa */}
@@ -240,14 +263,17 @@ export default function DetalhesProjeto() {
 
         {/* Modais */}
         {showEditModal && tarefaAtual && (
-          <Modal
+        <Modal
             tarefa={tarefaAtual}
             onSave={handleSaveEdits}
             onCancel={handleCancelEdit}
             onEditField={(updatedField) => setTarefaAtual((prev) => ({ ...prev!, ...updatedField }))}
-          />
-        )}
-
+            title="Editar Tarefa"
+            onClose={handleCancelEdit} 
+          >
+          {/* Conteúdo do Modal */}
+        </Modal>
+      )}
         {showDeleteModal && (
           <DeleteTaskModal
             isOpen={showDeleteModal}

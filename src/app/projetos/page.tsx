@@ -1,5 +1,6 @@
 "use client";
 import React, { useState } from "react";
+import dayjs from "dayjs"; // Import dayjs para formatação de datas
 import Filtro from "@/components/FiltroProjetos";
 import Tabela from "@/components/TabelaProjetos";
 import EditProjectModal from "@/components/ModalEditarProjetos";
@@ -16,10 +17,13 @@ import ExcluirTarefasModal from "@/components/ModalExcluirTarefas";
 import VerDetalhesTarefasModal from "@/components/ModalDetalhesTarefas";
 
 interface Tarefa {
+  id: number;
   titulo: string;
+  descricao?: string;
   responsavel: string;
   status: string;
   prazo: string;
+  projeto: string;
 }
 
 export interface LinhaTabela {
@@ -31,15 +35,56 @@ export interface LinhaTabela {
   final: string;
 }
 
+interface Project {
+  id: string;
+  nome: string;
+  descricao: string;
+  cliente: string;
+  time: string;
+  inicio: string;
+  final: string;
+}
+
+interface DeleteTaskModalProps {
+  tarefa: Tarefa; // Adicione esta linha se a tarefa for necessária
+  onClose: () => void;
+  onDelete: () => void;
+}
+
+
 const App: React.FC = () => {
   const [textoFiltro, definirTextoFiltro] = useState<string>("");
   const [dados, setDados] = useState<LinhaTabela[]>([
-    { nome: "Projeto A", descricao: "Descrição do Projeto A", cliente: "Cliente A", time: "Time A", inicio: "2023-01-01", final: "2023-12-31" },
-    { nome: "Projeto B", descricao: "Descrição do Projeto B", cliente: "Cliente B", time: "Time B", inicio: "2023-02-01", final: "2023-11-30" },
+    {
+      nome: "Projeto A",
+      descricao: "Descrição do Projeto A",
+      cliente: "Cliente A",
+      time: "Time A",
+      inicio: "2023-01-01",
+      final: "2023-12-31",
+    },
+    {
+      nome: "Projeto B",
+      descricao: "Descrição do Projeto B",
+      cliente: "Cliente B",
+      time: "Time B",
+      inicio: "2023-02-01",
+      final: "2023-11-30",
+    },
   ]);
+
+  // Formatando as datas
+  const dadosFormatados = dados.map((item) => ({
+    ...item,
+    inicio: dayjs(item.inicio).format("DD/MM/YYYY"),
+    final: dayjs(item.final).format("DD/MM/YYYY"),
+  }));
+
   const [tarefasProjeto, setTarefasProjeto] = useState<Tarefa[]>([]);
-  const [projetoSelecionado, setProjetoSelecionado] = useState<LinhaTabela | null>(null);
-  const [projetoParaExcluir, setProjetoParaExcluir] = useState<LinhaTabela | null>(null);
+  const [projetoSelecionado, setProjetoSelecionado] =
+    useState<LinhaTabela | null>(null);
+  const [projetoParaExcluir, setProjetoParaExcluir] =
+    useState<LinhaTabela | null>(null);
   const [mostrarModal, setMostrarModal] = useState<boolean>(false);
   const [isAdmin, setIsAdmin] = useState<boolean>(true);
   const [showToast, setShowToast] = useState<boolean>(false);
@@ -51,9 +96,11 @@ const App: React.FC = () => {
   const [mostrarEditarTarefa, setMostrarEditarTarefa] = useState(false);
   const [mostrarExcluirTarefa, setMostrarExcluirTarefa] = useState(false);
   const [mostrarDetalhesTarefa, setMostrarDetalhesTarefa] = useState(false);
-  const [tarefaSelecionada, setTarefaSelecionada] = useState<Tarefa | null>(null);
+  const [tarefaSelecionada, setTarefaSelecionada] = useState<Tarefa | null>(
+    null
+  );
 
-  const dadosFiltrados = dados.filter(
+  const dadosFiltrados = dadosFormatados.filter(
     (item) =>
       item.nome?.toLowerCase().includes(textoFiltro.toLowerCase()) ||
       item.cliente?.toLowerCase().includes(textoFiltro.toLowerCase()) ||
@@ -66,9 +113,33 @@ const App: React.FC = () => {
 
   const handleDetailClick = (projeto: LinhaTabela) => {
     const tarefasMock: Tarefa[] = [
-      { titulo: "Análise de Requisitos", responsavel: "Ana", status: "Concluída", prazo: "2023-05-20" },
-      { titulo: "Desenvolvimento", responsavel: "Carlos", status: "Em andamento", prazo: "2023-07-15" },
-      { titulo: "Testes", responsavel: "Beatriz", status: "Pendente", prazo: "2023-08-01" }
+      {
+        id: 1, // Adicione um id único para cada tarefa
+        titulo: "Análise de Requisitos",
+        descricao: "Descrição da tarefa", // Descrição pode ser opcional
+        responsavel: "Ana",
+        status: "Concluída",
+        prazo: dayjs("2023-05-20").format("DD/MM/YYYY"),
+        projeto: "Projeto A", // Adicione o nome do projeto
+      },
+      {
+        id: 2,
+        titulo: "Desenvolvimento",
+        descricao: "Descrição da tarefa", // Descrição pode ser opcional
+        responsavel: "Carlos",
+        status: "Em andamento",
+        prazo: dayjs("2023-07-15").format("DD/MM/YYYY"),
+        projeto: "Projeto B",
+      },
+      {
+        id: 3,
+        titulo: "Testes",
+        descricao: "Descrição da tarefa", // Descrição pode ser opcional
+        responsavel: "Beatriz",
+        status: "Pendente",
+        prazo: dayjs("2023-08-01").format("DD/MM/YYYY"),
+        projeto: "Projeto C",
+      },
     ];
 
     setTarefasProjeto(tarefasMock);
@@ -90,7 +161,9 @@ const App: React.FC = () => {
   };
 
   const handleDeleteProject = (projectId: string) => {
-    setDados((prevDados) => prevDados.filter((proj) => proj.nome !== projectId));
+    setDados((prevDados) =>
+      prevDados.filter((proj) => proj.nome !== projectId)
+    );
     setProjetoParaExcluir(null);
     triggerToast("Projeto excluído com sucesso!");
   };
@@ -132,11 +205,18 @@ const App: React.FC = () => {
         <Sidebar />
 
         <div className="flex-1 p-8 space-y-4">
-          <h1 className="text-4xl font-bold text-customGray font-poppins">Gerenciamento de Projetos</h1>
+          <h1 className="text-4xl font-bold text-customGray font-poppins">
+            Gerenciamento de Projetos
+          </h1>
 
-          <h2 className="text-3xl font-bold text-customYellow font-poppins mt-1">Projetos Cadastrados</h2>
+          <h2 className="text-3xl font-bold text-customYellow font-poppins mt-1">
+            Projetos Cadastrados
+          </h2>
 
-          <Filtro textoFiltro={textoFiltro} definirTextoFiltro={definirTextoFiltro} />
+          <Filtro
+            textoFiltro={textoFiltro}
+            definirTextoFiltro={definirTextoFiltro}
+          />
 
           <Tabela
             dados={dadosFiltrados}
@@ -154,7 +234,7 @@ const App: React.FC = () => {
 
           {projetoSelecionado && (
             <EditProjectModal
-              project={projetoSelecionado}
+              project={projetoSelecionado as Project}
               existingProjectNames={existingProjectNames}
               onClose={() => setProjetoSelecionado(null)}
               onSave={handleSave}
@@ -166,7 +246,8 @@ const App: React.FC = () => {
               project={projetoParaExcluir}
               onClose={() => setProjetoParaExcluir(null)}
               onDelete={handleDeleteProject}
-              checkDependencies={() => false}
+              // Usando Promise.resolve para retornar um Promise<boolean>
+              checkDependencies={() => Promise.resolve(false)}
               isAdmin={isAdmin}
             />
           )}
@@ -175,38 +256,21 @@ const App: React.FC = () => {
             <IncluirProjetoModal
               onClose={() => setMostrarModal(false)}
               onSave={(novoProjeto) => {
-                setDados([...dados, novoProjeto]);
+                // Aqui garantimos que 'novoProjetoCompleto' possui todas as propriedades de 'LinhaTabela'
+                const novoProjetoCompleto: LinhaTabela = {
+                  nome: novoProjeto.nome,
+                  descricao: novoProjeto.descricao,
+                  inicio: novoProjeto.inicio,
+                  final: novoProjeto.final,
+                  // Adicione valores para 'cliente' e 'time' que são obrigatórios em 'LinhaTabela'
+                  cliente: "Cliente padrão", // Substitua pelo valor adequado ou pelo dado vindo do modal
+                  time: "Time padrão", // Substitua pelo valor adequado ou pelo dado vindo do modal
+                };
+
+                setDados([...dados, novoProjetoCompleto]);
                 setMostrarModal(false);
                 triggerToast("Projeto incluído com sucesso!");
               }}
-            />
-          )}
-
-          {mostrarDetalhes && (
-            <ProjectDetailsModal
-              projectName={projetoSelecionado?.nome || ""}
-              tarefas={tarefasProjeto}
-              onClose={() => setMostrarDetalhes(false)}
-              onEdit={handleEditTarefa}
-              onDelete={handleDeleteTarefa}
-              onDetail={handleDetailsTarefa}
-              customButtons={
-                <div className="flex justify-between w-full">
-                  <button
-                    onClick={() => setMostrarDetalhes(false)}
-                    className="bg-red-500 text-white font-semibold py-2 px-4 rounded-lg flex items-center space-x-2 hover:bg-red-600 transition duration-200"
-                  >
-                    Fechar
-                  </button>
-                  <button
-                    onClick={() => setMostrarIncluirTarefa(true)}
-                    className="bg-green-500 text-white p-2 rounded-md hover:bg-green-600"
-
-                  >
-                    Incluir Tarefa
-                  </button>
-                </div>
-              }
             />
           )}
 
@@ -214,6 +278,15 @@ const App: React.FC = () => {
             <IncluirTarefasModal
               onClose={() => setMostrarIncluirTarefa(false)}
               onSave={handleSaveTarefa}
+              tarefa={{
+                id: 0, // ou algum valor padrão apropriado
+                titulo: "",
+                descricao: "",
+                responsavel: "",
+                status: "Pendente", // ou outro status padrão
+                prazo: "",
+                projeto: "", // ou o nome do projeto relacionado
+              }}
             />
           )}
 
@@ -224,22 +297,35 @@ const App: React.FC = () => {
               onSave={(tarefaAtualizada) => {
                 setTarefasProjeto((prevTarefas) =>
                   prevTarefas.map((tarefa) =>
-                    tarefa.titulo === tarefaSelecionada?.titulo ? tarefaAtualizada : tarefa
+                    tarefa.id === tarefaSelecionada?.id
+                      ? tarefaAtualizada
+                      : tarefa
                   )
                 );
                 setMostrarEditarTarefa(false);
                 triggerToast("Tarefa editada com sucesso!");
               }}
+              onCancel={() => setMostrarEditarTarefa(false)}
+              onEditField={(updatedField) => {
+                // Aqui, updatedField é um objeto que inclui as atualizações de campo
+                setTarefaSelecionada((prev) => ({
+                  ...prev!,
+                  ...updatedField,
+                }));
+              }}
+              title="Editar Tarefa"
             />
           )}
 
           {mostrarExcluirTarefa && tarefaSelecionada && (
             <ExcluirTarefasModal
-              tarefa={tarefaSelecionada}
+              isOpen={mostrarExcluirTarefa} // Adicione esta linha
               onClose={() => setMostrarExcluirTarefa(false)}
               onDelete={() => {
                 setTarefasProjeto((prevTarefas) =>
-                  prevTarefas.filter((tarefa) => tarefa.titulo !== tarefaSelecionada?.titulo)
+                  prevTarefas.filter(
+                    (tarefa) => tarefa.id !== tarefaSelecionada?.id
+                  )
                 );
                 setMostrarExcluirTarefa(false);
                 triggerToast("Tarefa excluída com sucesso!");
@@ -256,7 +342,7 @@ const App: React.FC = () => {
         </div>
       </div>
       <Footer />
-      {showToast && <Toast message={toastMessage} show={false} />}
+      {showToast && <Toast message={toastMessage} show={showToast} />}
     </div>
   );
 };
