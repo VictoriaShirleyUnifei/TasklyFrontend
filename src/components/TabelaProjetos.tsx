@@ -1,6 +1,6 @@
 import React from "react";
 import { LinhaTabela } from "@/app/page";
-import { FaEdit, FaEye, FaTrashAlt } from "react-icons/fa";
+import { FaEdit, FaTrashAlt, FaEye } from "react-icons/fa";
 
 interface TabelaProps {
   dados: LinhaTabela[];
@@ -27,7 +27,13 @@ const Tabela: React.FC<TabelaProps> = ({ dados, onEditClick, onDeleteClick, onDe
         <tbody className="bg-white divide-y divide-gray-200">
           {dados.map((item) => (
             <tr key={item.nome}>
-              <td className="px-6 py-4 whitespace-nowrap text-sm font-bold text-customYellow text-center">{item.nome}</td>
+              {/* Célula de Nome do Projeto - Agora clicável */}
+              <td
+                className="px-6 py-4 whitespace-nowrap text-sm font-bold text-customYellow text-center cursor-pointer"
+                onClick={() => onDetailClick(item)} // Abre o modal de detalhes ao clicar no nome
+              >
+                {item.nome}
+              </td>
               <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-700 text-center">{item.descricao}</td>
               <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-700 text-center">{item.cliente}</td>
               <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-700 text-center">{item.time}</td>
@@ -35,21 +41,30 @@ const Tabela: React.FC<TabelaProps> = ({ dados, onEditClick, onDeleteClick, onDe
               <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-700 text-center">{item.final}</td>
               <td className="px-6 py-4 whitespace-nowrap text-center text-sm font-medium flex justify-center space-x-2">
                 <button
-                  onClick={() => onEditClick(item)}
+                  onClick={(e) => {
+                    e.stopPropagation(); // Impede que o clique no botão acione o clique no nome
+                    onEditClick(item);
+                  }}
                   className="text-white bg-customYellow hover:bg-yellow-600 px-3 py-2 rounded-md transition duration-150"
                   title="Editar"
                 >
                   <FaEdit />
                 </button>
                 <button
-                  onClick={() => onDetailClick(item)}
+                  onClick={(e) => {
+                    e.stopPropagation(); // Impede que o clique no botão acione o clique no nome
+                    onDetailClick(item);
+                  }}
                   className="text-white bg-blue-500 hover:bg-blue-700 px-3 py-2 rounded-md transition duration-150"
                   title="Detalhes"
                 >
                   <FaEye />
                 </button>
                 <button
-                  onClick={() => onDeleteClick(item)}
+                  onClick={(e) => {
+                    e.stopPropagation(); // Impede que o clique no botão acione o clique no nome
+                    onDeleteClick(item);
+                  }}
                   className="text-white bg-red-500 hover:bg-red-700 px-3 py-2 rounded-md transition duration-150"
                   title="Excluir"
                 >
