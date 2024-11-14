@@ -9,7 +9,6 @@ import Toast from "@/components/Toast";
 import IncluirProjetoModal from "@/components/ModalIncluirProjetos";
 import Footer from "@/components/Footer";
 import { FaPlus } from "react-icons/fa";
-import ProjectDetailsModal from "@/components/ModalDetalhesProjeto";
 
 import IncluirTarefasModal from "@/components/ModalIncluirTarefas";
 import EditarTarefasModal from "@/components/ModalEditarTarefas";
@@ -201,7 +200,8 @@ const App: React.FC = () => {
                   </button>
                   <button
                     onClick={() => setMostrarIncluirTarefa(true)}
-                    className="bg-blue-500 text-white font-semibold py-2 px-4 rounded-lg flex items-center space-x-2 hover:bg-blue-600 transition duration-200"
+                    className="bg-green-500 text-white p-2 rounded-md hover:bg-green-600"
+
                   >
                     Incluir Tarefa
                   </button>

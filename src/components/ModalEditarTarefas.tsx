@@ -1,43 +1,24 @@
-// EditarTarefaModal.tsx
-import React, { useState } from "react";
+// Modal.tsx
+import React from "react";
 
-interface Tarefa {
-  titulo: string;
-  descricao: string;
-  prazo: string;
-  responsavel: string;
-  status: string;
-  projeto: string;
-}
-
-interface EditarTarefaModalProps {
-  tarefa: Tarefa;
+interface ModalProps {
+  title: string;
+  children: React.ReactNode;
   onClose: () => void;
-  onSave: (updatedTarefa: Tarefa) => void;
 }
 
-const EditarTarefaModal: React.FC<EditarTarefaModalProps> = ({ tarefa, onClose, onSave }) => {
-  const [titulo, setTitulo] = useState(tarefa.titulo);
-  const [descricao, setDescricao] = useState(tarefa.descricao);
-  const [prazo, setPrazo] = useState(tarefa.prazo);
-  const [responsavel, setResponsavel] = useState(tarefa.responsavel);
-  const [status, setStatus] = useState(tarefa.status);
-  const [projeto, setProjeto] = useState(tarefa.projeto);
-
-  const handleSave = () => {
-    onSave({ titulo, descricao, prazo, responsavel, status, projeto });
-  };
-
+const Modal: React.FC<ModalProps> = ({ title, children, onClose }) => {
   return (
-    <div className="fixed inset-0 flex items-center justify-center bg-gray-800 bg-opacity-50 z-40">
-      <div className="bg-white p-6 rounded-lg shadow-lg w-96">
-        <h2 className="text-2xl font-bold text-customYellow mb-4">Editar Tarefa</h2>
-
-        {/* Similar to the IncluirTarefaModal component with pre-filled values */}
-        {/*...*/}
+    <div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50 z-50">
+      <div className="bg-white rounded-lg w-full max-w-md p-6">
+        <div className="flex justify-between items-center border-b pb-3 mb-4">
+          <h3 className="text-xl font-semibold">{title}</h3>
+          <button onClick={onClose} className="text-gray-600 hover:text-gray-800">&times;</button>
+        </div>
+        {children}
       </div>
     </div>
   );
 };
 
-export default EditarTarefaModal;
+export default Modal;

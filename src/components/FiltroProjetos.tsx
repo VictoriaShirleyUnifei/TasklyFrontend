@@ -8,7 +8,7 @@ interface FiltroProps {
 const Filtro: React.FC<FiltroProps> = ({ textoFiltro, definirTextoFiltro }) => {
   return (
     <div className="flex items-center mb-6 w-full">
-      <div className="relative w-full max-w-[300px]">
+      <div className="relative w-full max-w-[325px]">
         <input
           id="input-filtro"
           type="text"
