@@ -83,6 +83,8 @@ const TabelaTarefas: React.FC<TabelaTarefasProps> = ({ tarefas, onDelete, onAdd,
   });
   const [filtrosSubtarefas, setFiltrosSubtarefas] = useState({ titulo: "", status: "", responsavel: "" });
   const [subtarefaParaEditar, setSubtarefaParaEditar] = useState<Subtarefa | null>(null);
+  const [subtarefaParaExcluir, setSubtarefaParaExcluir] = useState<Subtarefa | null>(null);
+  const [isSubtaskDeleteModalOpen, setIsSubtaskDeleteModalOpen] = useState(false);
 
   // Abre o modal de exclusão e define a tarefa a ser excluída
   const openModal = (tarefa: Tarefa) => {
@@ -195,6 +197,27 @@ const TabelaTarefas: React.FC<TabelaTarefasProps> = ({ tarefas, onDelete, onAdd,
     setNovaSubtarefa(subtarefa);
     setSubtarefaParaEditar(subtarefa);
     setIsIncludeModalOpen(true);
+  };
+
+  const handleDeleteSubtask = (subtarefa: Subtarefa) => {
+    if (subtarefa.status === "Em andamento") {
+      alert("A subtarefa em andamento não pode ser excluída.");
+      return;
+    }
+    setSubtarefaParaExcluir(subtarefa);
+    setIsSubtaskDeleteModalOpen(true);
+  };
+
+  const closeSubtaskDeleteModal = () => {
+    setIsSubtaskDeleteModalOpen(false);
+    setSubtarefaParaExcluir(null);
+  };
+
+  const confirmDeleteSubtask = () => {
+    if (subtarefaParaExcluir) {
+      setSubtarefas((prevSubtarefas) => prevSubtarefas.filter((sub) => sub.id !== subtarefaParaExcluir.id));
+      closeSubtaskDeleteModal();
+    }
   };
 
   const handleFilterChange = (
@@ -328,6 +351,12 @@ const TabelaTarefas: React.FC<TabelaTarefasProps> = ({ tarefas, onDelete, onAdd,
                                 className="text-yellow-500 hover:text-yellow-700 transition-colors duration-200"
                               >
                                 <FaEdit />
+                              </button>
+                              <button
+                                onClick={() => handleDeleteSubtask(subtarefa)}
+                                className="text-red-500 hover:text-red-700 transition-colors duration-200"
+                              >
+                                <FaTrash />
                               </button>
                             </div>
                           </div>
@@ -497,6 +526,31 @@ const TabelaTarefas: React.FC<TabelaTarefasProps> = ({ tarefas, onDelete, onAdd,
                 </button>
               </div>
             </form>
+          </div>
+        </div>
+      )}
+
+      {/* Modal de Exclusão de Subtarefa */}
+      {isSubtaskDeleteModalOpen && subtarefaParaExcluir && (
+        <div className="fixed inset-0 flex justify-center items-center bg-gray-500 bg-opacity-50">
+          <div className="bg-white p-6 rounded-lg shadow-lg w-96">
+            <h2 className="text-xl font-bold mb-4">Tem certeza que deseja excluir?</h2>
+            <div className="flex justify-between mt-4">
+              <button
+                type="button"
+                className="bg-gray-500 text-white px-4 py-2 rounded-md hover:bg-gray-600"
+                onClick={closeSubtaskDeleteModal}
+              >
+                Cancelar
+              </button>
+              <button
+                type="button"
+                className="bg-red-500 text-white px-4 py-2 rounded-md hover:bg-red-600"
+                onClick={confirmDeleteSubtask}
+              >
+                Excluir
+              </button>
+            </div>
           </div>
         </div>
       )}
