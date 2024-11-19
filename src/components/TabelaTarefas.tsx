@@ -82,6 +82,7 @@ const TabelaTarefas: React.FC<TabelaTarefasProps> = ({ tarefas, onDelete, onAdd,
     tarefaId: 0,
   });
   const [filtrosSubtarefas, setFiltrosSubtarefas] = useState({ titulo: "", status: "", responsavel: "" });
+  const [subtarefaParaEditar, setSubtarefaParaEditar] = useState<Subtarefa | null>(null);
 
   // Abre o modal de exclusão e define a tarefa a ser excluída
   const openModal = (tarefa: Tarefa) => {
@@ -109,6 +110,16 @@ const TabelaTarefas: React.FC<TabelaTarefasProps> = ({ tarefas, onDelete, onAdd,
 
   const closeIncludeModal = () => {
     setIsIncludeModalOpen(false);
+    setNovaSubtarefa({
+      id: 0,
+      titulo: "",
+      descricao: "",
+      prazo: "",
+      responsavel: "",
+      status: "Pendente",
+      tarefaId: 0,
+    });
+    setSubtarefaParaEditar(null);
   };
 
   const handleInputChange = (
@@ -165,20 +176,25 @@ const TabelaTarefas: React.FC<TabelaTarefasProps> = ({ tarefas, onDelete, onAdd,
         alert("O título da subtarefa não pode estar duplicado dentro da mesma tarefa principal.");
         return;
       }
-      setSubtarefas((prevSubtarefas) => [...prevSubtarefas, { ...novaSubtarefa, id: Date.now() }]);
-      setNovaSubtarefa({
-        id: 0,
-        titulo: "",
-        descricao: "",
-        prazo: "",
-        responsavel: "",
-        status: "Pendente",
-        tarefaId: 0,
-      });
-      setIsIncludeModalOpen(false);
+      if (subtarefaParaEditar) {
+        setSubtarefas((prevSubtarefas) =>
+          prevSubtarefas.map((sub) =>
+            sub.id === subtarefaParaEditar.id ? { ...novaSubtarefa, id: subtarefaParaEditar.id } : sub
+          )
+        );
+      } else {
+        setSubtarefas((prevSubtarefas) => [...prevSubtarefas, { ...novaSubtarefa, id: Date.now() }]);
+      }
+      closeIncludeModal();
     } else {
       alert("Por favor, preencha todos os campos obrigatórios.");
     }
+  };
+
+  const handleEditSubtask = (subtarefa: Subtarefa) => {
+    setNovaSubtarefa(subtarefa);
+    setSubtarefaParaEditar(subtarefa);
+    setIsIncludeModalOpen(true);
   };
 
   const handleFilterChange = (
@@ -300,12 +316,20 @@ const TabelaTarefas: React.FC<TabelaTarefasProps> = ({ tarefas, onDelete, onAdd,
                         .map((subtarefa) => (
                           <div
                             key={subtarefa.id}
-                            className="flex justify-between border-b py-2"
+                            className="flex justify-between items-center border-b py-2"
                           >
                             <span>{subtarefa.titulo}</span>
                             <span>{subtarefa.responsavel}</span>
                             <span>{subtarefa.prazo}</span>
                             <span>{subtarefa.status}</span>
+                            <div className="flex space-x-2">
+                              <button
+                                onClick={() => handleEditSubtask(subtarefa)}
+                                className="text-yellow-500 hover:text-yellow-700 transition-colors duration-200"
+                              >
+                                <FaEdit />
+                              </button>
+                            </div>
                           </div>
                         ))}
                       <button
@@ -403,11 +427,13 @@ const TabelaTarefas: React.FC<TabelaTarefasProps> = ({ tarefas, onDelete, onAdd,
         </div>
       )}
 
-      {/* Modal de Inclusão de Subtarefa */}
+      {/* Modal de Inclusão/Edição de Subtarefa */}
       {isIncludeModalOpen && novaSubtarefa.tarefaId !== 0 && (
         <div className="fixed inset-0 flex justify-center items-center bg-gray-500 bg-opacity-50">
           <div className="bg-white p-6 rounded-lg shadow-lg w-96">
-            <h2 className="text-xl font-bold mb-4">Incluir Nova Subtarefa</h2>
+            <h2 className="text-xl font-bold mb-4">
+              {subtarefaParaEditar ? "Editar Subtarefa" : "Incluir Nova Subtarefa"}
+            </h2>
             <form onSubmit={handleSubtaskSubmit}>
               <div className="grid grid-cols-2 gap-4">
                 <input
@@ -467,7 +493,7 @@ const TabelaTarefas: React.FC<TabelaTarefasProps> = ({ tarefas, onDelete, onAdd,
                   type="submit"
                   className="bg-green-500 text-white px-4 py-2 rounded-md hover:bg-green-600"
                 >
-                  Salvar Subtarefa
+                  {subtarefaParaEditar ? "Salvar Alterações" : "Salvar Subtarefa"}
                 </button>
               </div>
             </form>
