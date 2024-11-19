@@ -1,6 +1,8 @@
 import React, { useState } from "react";
-import { FaPlus, FaTrash, FaEye, FaEdit } from "react-icons/fa";
+import { FaPlus, FaTrash, FaEdit } from "react-icons/fa";
 import DeleteTaskModal from "./ModalExcluirTarefas";
+import dayjs from "dayjs";
+import { FiSearch } from "react-icons/fi";
 
 const statusStyles = {
   Pendente: "bg-gray-300 text-gray-700",
@@ -15,7 +17,17 @@ export interface Tarefa {
   responsavel: string;
   status: string;
   prazo: string;
-  projeto: string; // Propriedade obrigatória
+  projeto: string;
+}
+
+interface Subtarefa {
+  id: number;
+  titulo: string;
+  descricao?: string;
+  prazo: string;
+  responsavel: string;
+  status: string;
+  tarefaId: number;
 }
 
 interface TabelaTarefasProps {
@@ -23,17 +35,9 @@ interface TabelaTarefasProps {
   onDelete: (tarefa: Tarefa) => void;
   onAdd: (tarefa: Tarefa) => void;
   onEdit: (tarefa: Tarefa) => void;
-  onView: (tarefa: Tarefa) => void;
 }
 
-
-const TabelaTarefas: React.FC<TabelaTarefasProps> = ({
-  tarefas,
-  onDelete,
-  onAdd,
-  onEdit,
-  onView,
-}) => {
+const TabelaTarefas: React.FC<TabelaTarefasProps> = ({ tarefas, onDelete, onAdd, onEdit }) => {
   const [novaTarefa, setNovaTarefa] = useState<Tarefa>({
     id: 0,
     titulo: "",
@@ -41,15 +45,43 @@ const TabelaTarefas: React.FC<TabelaTarefasProps> = ({
     prazo: "",
     responsavel: "",
     status: "Pendente",
-    projeto: "", // Adicione esta linha
+    projeto: "",
   });
-  
 
-  const [tarefaParaExcluir, setTarefaParaExcluir] = useState<Tarefa | null>(
-    null
-  );
+  const [tarefaParaExcluir, setTarefaParaExcluir] = useState<Tarefa | null>(null);
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [isIncludeModalOpen, setIsIncludeModalOpen] = useState(false);
+  const [openSubtasks, setOpenSubtasks] = useState<number[]>([]);
+  const [subtarefas, setSubtarefas] = useState<Subtarefa[]>([
+    {
+      id: 1,
+      titulo: "Planejamento de Testes",
+      descricao: "Definir os casos de teste para o projeto",
+      prazo: "2023-08-10",
+      responsavel: "Beatriz",
+      status: "Pendente",
+      tarefaId: 1,
+    },
+    {
+      id: 2,
+      titulo: "Execução de Testes Unitários",
+      descricao: "Realizar testes unitários no módulo principal",
+      prazo: "2023-08-15",
+      responsavel: "Carlos",
+      status: "Em andamento",
+      tarefaId: 1,
+    },
+  ]);
+  const [novaSubtarefa, setNovaSubtarefa] = useState<Subtarefa>({
+    id: 0,
+    titulo: "",
+    descricao: "",
+    prazo: "",
+    responsavel: "",
+    status: "Pendente",
+    tarefaId: 0,
+  });
+  const [filtrosSubtarefas, setFiltrosSubtarefas] = useState({ titulo: "", status: "", responsavel: "" });
 
   // Abre o modal de exclusão e define a tarefa a ser excluída
   const openModal = (tarefa: Tarefa) => {
@@ -89,7 +121,11 @@ const TabelaTarefas: React.FC<TabelaTarefasProps> = ({
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
     if (novaTarefa.titulo && novaTarefa.prazo && novaTarefa.responsavel) {
-      onAdd({ ...novaTarefa, id: Date.now(), projeto: "NomeDoProjeto" }); // Inclua o nome do projeto
+      if (dayjs(novaTarefa.prazo).isBefore(dayjs())) {
+        alert("A data de vencimento não pode ser anterior à data atual.");
+        return;
+      }
+      onAdd({ ...novaTarefa, id: Date.now(), projeto: "NomeDoProjeto" });
       setNovaTarefa({
         id: 0,
         titulo: "",
@@ -97,20 +133,75 @@ const TabelaTarefas: React.FC<TabelaTarefasProps> = ({
         prazo: "",
         responsavel: "",
         status: "Pendente",
-        projeto: "", // Reinicialize com um valor padrão
+        projeto: "",
       });
       closeIncludeModal();
     } else {
       alert("Por favor, preencha todos os campos obrigatórios.");
     }
   };
-  
+
+  const toggleSubtasksView = (tarefaId: number) => {
+    setOpenSubtasks((prevOpenSubtasks) =>
+      prevOpenSubtasks.includes(tarefaId)
+        ? prevOpenSubtasks.filter((id) => id !== tarefaId)
+        : [...prevOpenSubtasks, tarefaId]
+    );
+  };
+
+  const handleAddSubtask = (tarefaId: number) => {
+    setNovaSubtarefa({ ...novaSubtarefa, tarefaId });
+    setIsIncludeModalOpen(true);
+  };
+
+  const handleSubtaskSubmit = (e: React.FormEvent) => {
+    e.preventDefault();
+    if (novaSubtarefa.titulo && novaSubtarefa.prazo && novaSubtarefa.responsavel) {
+      if (dayjs(novaSubtarefa.prazo).isBefore(dayjs())) {
+        alert("A data de vencimento não pode ser anterior à data atual.");
+        return;
+      }
+      if (subtarefas.some(sub => sub.titulo.toLowerCase() === novaSubtarefa.titulo.toLowerCase() && sub.tarefaId === novaSubtarefa.tarefaId)) {
+        alert("O título da subtarefa não pode estar duplicado dentro da mesma tarefa principal.");
+        return;
+      }
+      setSubtarefas((prevSubtarefas) => [...prevSubtarefas, { ...novaSubtarefa, id: Date.now() }]);
+      setNovaSubtarefa({
+        id: 0,
+        titulo: "",
+        descricao: "",
+        prazo: "",
+        responsavel: "",
+        status: "Pendente",
+        tarefaId: 0,
+      });
+      setIsIncludeModalOpen(false);
+    } else {
+      alert("Por favor, preencha todos os campos obrigatórios.");
+    }
+  };
+
+  const handleFilterChange = (
+    e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>
+  ) => {
+    const { name, value } = e.target;
+    setFiltrosSubtarefas((prevFiltros) => ({ ...prevFiltros, [name]: value }));
+  };
+
+  const filteredSubtarefas = subtarefas.filter((subtarefa) => {
+    return (
+      (filtrosSubtarefas.titulo ? subtarefa.titulo.toLowerCase().includes(filtrosSubtarefas.titulo.toLowerCase()) : true) &&
+      (filtrosSubtarefas.status ? subtarefa.status.toLowerCase() === filtrosSubtarefas.status.toLowerCase() : true) &&
+      (filtrosSubtarefas.responsavel ? subtarefa.responsavel.toLowerCase().includes(filtrosSubtarefas.responsavel.toLowerCase()) : true)
+    );
+  });
 
   return (
     <div className="relative overflow-x-auto rounded-lg shadow-lg bg-white p-4">
       <table className="min-w-full bg-white">
         <thead>
           <tr>
+            <th className="px-4 py-2 text-left text-sm font-bold text-gray-700 bg-gray-200 border-b">Subtarefas</th>
             <th className="px-4 py-2 text-left text-sm font-bold text-gray-700 bg-gray-200 border-b">
               Título
             </th>
@@ -133,52 +224,101 @@ const TabelaTarefas: React.FC<TabelaTarefasProps> = ({
         </thead>
         <tbody>
           {tarefas.map((tarefa) => (
-            <tr key={tarefa.id} className="border-b">
-              <td className="px-4 py-2 text-sm text-gray-800">
-                {tarefa.titulo}
-              </td>
-              <td className="px-4 py-2 text-sm text-gray-800">
-                {tarefa.descricao}
-              </td>
-              <td className="px-4 py-2">
-                <span
-                  className={`px-2 py-1 rounded-full text-xs font-semibold ${
-                    statusStyles[tarefa.status as keyof typeof statusStyles]
-                  }`}
-                >
-                  {tarefa.status}
-                </span>
-              </td>
-              <td className="px-4 py-2 text-sm text-gray-800">
-                {tarefa.prazo}
-              </td>
-              <td className="px-4 py-2 text-sm text-gray-800">
-                {tarefa.responsavel}
-              </td>
-              <td className="px-4 py-2 text-center space-x-2">
-                <button
-                  onClick={() => onEdit(tarefa)}
-                  className="text-yellow-500 hover:text-yellow-700 transition-colors duration-200"
-                >
-                  <FaEdit />
-                </button>
-                {
-                  /*
-                   <button
-                  onClick={() => onView(tarefa)}
-                  className="text-blue-500 hover:text-blue-700 transition-colors duration-200"
-                >
-                  <FaEye />
-                </button>*/ 
-                }
-                <button
-                  onClick={() => openModal(tarefa)}
-                  className="text-red-500 hover:text-red-700 transition-colors duration-200"
-                >
-                  <FaTrash />
-                </button>
-              </td>
-            </tr>
+            <React.Fragment key={tarefa.id}>
+              <tr className="border-b">
+                <td className="px-4 py-2 text-left text-sm font-bold text-gray-700">
+                  <FaPlus
+                    className="cursor-pointer text-blue-500"
+                    onClick={() => toggleSubtasksView(tarefa.id)}
+                  />
+                </td>
+                <td className="px-4 py-2 text-sm text-gray-800">{tarefa.titulo}</td>
+                <td className="px-4 py-2 text-sm text-gray-800">{tarefa.descricao}</td>
+                <td className="px-4 py-2">
+                  <span
+                    className={`px-2 py-1 rounded-full text-xs font-semibold ${
+                      statusStyles[tarefa.status as keyof typeof statusStyles]
+                    }`}
+                  >
+                    {tarefa.status}
+                  </span>
+                </td>
+                <td className="px-4 py-2 text-sm text-gray-800">{tarefa.prazo}</td>
+                <td className="px-4 py-2 text-sm text-gray-800">{tarefa.responsavel}</td>
+                <td className="px-4 py-2 text-center space-x-2">
+                  <button
+                    onClick={() => onEdit(tarefa)}
+                    className="text-yellow-500 hover:text-yellow-700 transition-colors duration-200"
+                  >
+                    <FaEdit />
+                  </button>
+                  <button
+                    onClick={() => openModal(tarefa)}
+                    className="text-red-500 hover:text-red-700 transition-colors duration-200"
+                  >
+                    <FaTrash />
+                  </button>
+                </td>
+              </tr>
+              {openSubtasks.includes(tarefa.id) && (
+                <tr key={`subtasks-${tarefa.id}`} className="bg-gray-100">
+                  <td colSpan={7} className="p-4">
+                    <div className="flex flex-col">
+                      <div className="flex items-center border rounded p-2 mb-4 bg-gray-100">
+                        <FiSearch className="mr-2 text-gray-400" />
+                        <input
+                          type="text"
+                          name="titulo"
+                          placeholder="Digite o nome da subtarefa"
+                          value={filtrosSubtarefas.titulo}
+                          onChange={handleFilterChange}
+                          className="p-2 w-full outline-none border-r"
+                        />
+                        <select
+                          name="status"
+                          value={filtrosSubtarefas.status}
+                          onChange={handleFilterChange}
+                          className="p-2 border-r outline-none"
+                        >
+                          <option value="">Status</option>
+                          <option value="Pendente">Pendente</option>
+                          <option value="Em andamento">Em andamento</option>
+                          <option value="Concluída">Concluída</option>
+                        </select>
+                        <input
+                          type="text"
+                          name="responsavel"
+                          placeholder="Responsável"
+                          value={filtrosSubtarefas.responsavel}
+                          onChange={handleFilterChange}
+                          className="p-2 w-full outline-none"
+                        />
+                      </div>
+                      <h3 className="font-bold text-lg mb-2">Subtarefas</h3>
+                      {filteredSubtarefas
+                        .filter((subtarefa) => subtarefa.tarefaId === tarefa.id)
+                        .map((subtarefa) => (
+                          <div
+                            key={subtarefa.id}
+                            className="flex justify-between border-b py-2"
+                          >
+                            <span>{subtarefa.titulo}</span>
+                            <span>{subtarefa.responsavel}</span>
+                            <span>{subtarefa.prazo}</span>
+                            <span>{subtarefa.status}</span>
+                          </div>
+                        ))}
+                      <button
+                        onClick={() => handleAddSubtask(tarefa.id)}
+                        className="bg-blue-500 text-white px-4 py-2 mt-4 rounded"
+                      >
+                        Incluir Subtarefa
+                      </button>
+                    </div>
+                  </td>
+                </tr>
+              )}
+            </React.Fragment>
           ))}
         </tbody>
       </table>
@@ -192,7 +332,7 @@ const TabelaTarefas: React.FC<TabelaTarefasProps> = ({
       </button>
 
       {/* Modal de Inclusão de Tarefa */}
-      {isIncludeModalOpen && (
+      {isIncludeModalOpen && novaSubtarefa.tarefaId === 0 && (
         <div className="fixed inset-0 flex justify-center items-center bg-gray-500 bg-opacity-50">
           <div className="bg-white p-6 rounded-lg shadow-lg w-96">
             <h2 className="text-xl font-bold mb-4">Incluir Nova Tarefa</h2>
@@ -256,6 +396,78 @@ const TabelaTarefas: React.FC<TabelaTarefasProps> = ({
                   className="bg-green-500 text-white px-4 py-2 rounded-md hover:bg-green-600"
                 >
                   Salvar Tarefa
+                </button>
+              </div>
+            </form>
+          </div>
+        </div>
+      )}
+
+      {/* Modal de Inclusão de Subtarefa */}
+      {isIncludeModalOpen && novaSubtarefa.tarefaId !== 0 && (
+        <div className="fixed inset-0 flex justify-center items-center bg-gray-500 bg-opacity-50">
+          <div className="bg-white p-6 rounded-lg shadow-lg w-96">
+            <h2 className="text-xl font-bold mb-4">Incluir Nova Subtarefa</h2>
+            <form onSubmit={handleSubtaskSubmit}>
+              <div className="grid grid-cols-2 gap-4">
+                <input
+                  type="text"
+                  name="titulo"
+                  placeholder="Título da subtarefa *"
+                  className="p-2 border rounded"
+                  value={novaSubtarefa.titulo}
+                  onChange={(e) => setNovaSubtarefa({ ...novaSubtarefa, titulo: e.target.value })}
+                  required
+                />
+                <input
+                  type="text"
+                  name="descricao"
+                  placeholder="Descrição detalhada da subtarefa"
+                  className="p-2 border rounded"
+                  value={novaSubtarefa.descricao}
+                  onChange={(e) => setNovaSubtarefa({ ...novaSubtarefa, descricao: e.target.value })}
+                />
+                <input
+                  type="date"
+                  name="prazo"
+                  className="p-2 border rounded"
+                  value={novaSubtarefa.prazo}
+                  onChange={(e) => setNovaSubtarefa({ ...novaSubtarefa, prazo: e.target.value })}
+                  required
+                />
+                <input
+                  type="text"
+                  name="responsavel"
+                  placeholder="Responsável *"
+                  className="p-2 border rounded"
+                  value={novaSubtarefa.responsavel}
+                  onChange={(e) => setNovaSubtarefa({ ...novaSubtarefa, responsavel: e.target.value })}
+                  required
+                />
+                <select
+                  name="status"
+                  className="p-2 border rounded"
+                  value={novaSubtarefa.status}
+                  onChange={(e) => setNovaSubtarefa({ ...novaSubtarefa, status: e.target.value })}
+                >
+                  <option value="Pendente">Pendente</option>
+                  <option value="Em andamento">Em andamento</option>
+                  <option value="Concluída">Concluída</option>
+                </select>
+              </div>
+              <div className="flex justify-between mt-4">
+                <button
+                  type="button"
+                  className="bg-gray-300 text-gray-700 px-4 py-2 rounded-md hover:bg-gray-400"
+                  onClick={closeIncludeModal}
+                >
+                  Cancelar
+                </button>
+                <button
+                  type="submit"
+                  className="bg-green-500 text-white px-4 py-2 rounded-md hover:bg-green-600"
+                >
+                  Salvar Subtarefa
                 </button>
               </div>
             </form>

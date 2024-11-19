@@ -47,7 +47,7 @@ export default function DetalhesProjeto() {
     const tarefasMock: Tarefa[] = [
       {
         id: 1,
-        titulo: "Análise de Requisitos",
+        titulo: "Testes",
         responsavel: "Ana",
         status: "Concluída",
         prazo: dayjs("2023-05-20").format("DD/MM/YYYY"), // Formata a data
@@ -63,7 +63,7 @@ export default function DetalhesProjeto() {
       },
       {
         id: 3,
-        titulo: "Testes",
+        titulo: "Análise de Requisitos",
         responsavel: "Beatriz",
         status: "Pendente",
         prazo: dayjs("2023-08-01").format("DD/MM/YYYY"), // Formata a data
