@@ -3,6 +3,7 @@ import { FaPlus, FaTrash, FaEdit } from "react-icons/fa";
 import DeleteTaskModal from "./ModalExcluirTarefas";
 import dayjs from "dayjs";
 import { FiSearch } from "react-icons/fi";
+import Toast from "./Toast";
 
 const statusStyles = {
   Pendente: "bg-gray-300 text-gray-700",
@@ -85,6 +86,14 @@ const TabelaTarefas: React.FC<TabelaTarefasProps> = ({ tarefas, onDelete, onAdd,
   const [subtarefaParaEditar, setSubtarefaParaEditar] = useState<Subtarefa | null>(null);
   const [subtarefaParaExcluir, setSubtarefaParaExcluir] = useState<Subtarefa | null>(null);
   const [isSubtaskDeleteModalOpen, setIsSubtaskDeleteModalOpen] = useState(false);
+  const [toastMessage, setToastMessage] = useState("");
+  const [showToast, setShowToast] = useState(false);
+
+  const showToastMessage = (message: string) => {
+    setToastMessage(message);
+    setShowToast(true);
+    setTimeout(() => setShowToast(false), 3000);
+  };
 
   // Abre o modal de exclusão e define a tarefa a ser excluída
   const openModal = (tarefa: Tarefa) => {
@@ -103,6 +112,7 @@ const TabelaTarefas: React.FC<TabelaTarefasProps> = ({ tarefas, onDelete, onAdd,
     if (tarefaParaExcluir) {
       onDelete(tarefaParaExcluir);
       closeModal();
+      showToastMessage("Tarefa excluída com sucesso!");
     }
   };
 
@@ -149,6 +159,7 @@ const TabelaTarefas: React.FC<TabelaTarefasProps> = ({ tarefas, onDelete, onAdd,
         projeto: "",
       });
       closeIncludeModal();
+      showToastMessage("Tarefa incluída com sucesso!");
     } else {
       alert("Por favor, preencha todos os campos obrigatórios.");
     }
@@ -184,8 +195,10 @@ const TabelaTarefas: React.FC<TabelaTarefasProps> = ({ tarefas, onDelete, onAdd,
             sub.id === subtarefaParaEditar.id ? { ...novaSubtarefa, id: subtarefaParaEditar.id } : sub
           )
         );
+        showToastMessage("Subtarefa editada com sucesso!");
       } else {
         setSubtarefas((prevSubtarefas) => [...prevSubtarefas, { ...novaSubtarefa, id: Date.now() }]);
+        showToastMessage("Subtarefa incluída com sucesso!");
       }
       closeIncludeModal();
     } else {
@@ -217,6 +230,7 @@ const TabelaTarefas: React.FC<TabelaTarefasProps> = ({ tarefas, onDelete, onAdd,
     if (subtarefaParaExcluir) {
       setSubtarefas((prevSubtarefas) => prevSubtarefas.filter((sub) => sub.id !== subtarefaParaExcluir.id));
       closeSubtaskDeleteModal();
+      showToastMessage("Subtarefa excluída com sucesso!");
     }
   };
 
@@ -561,6 +575,9 @@ const TabelaTarefas: React.FC<TabelaTarefasProps> = ({ tarefas, onDelete, onAdd,
         onClose={closeModal}
         onDelete={handleDelete}
       />
+
+      {/* Toast Notification */}
+      <Toast message={toastMessage} show={showToast} />
     </div>
   );
 };
