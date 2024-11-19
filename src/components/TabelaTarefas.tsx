@@ -347,39 +347,56 @@ const TabelaTarefas: React.FC<TabelaTarefasProps> = ({ tarefas, onDelete, onAdd,
                           className="p-2 w-full outline-none"
                         />
                       </div>
-                      <h3 className="font-bold text-lg mb-2">Subtarefas</h3>
-                      {filteredSubtarefas
-                        .filter((subtarefa) => subtarefa.tarefaId === tarefa.id)
-                        .map((subtarefa) => (
-                          <div
-                            key={subtarefa.id}
-                            className="flex justify-between items-center border-b py-2"
-                          >
-                            <span>{subtarefa.titulo}</span>
-                            <span>{subtarefa.responsavel}</span>
-                            <span>{subtarefa.prazo}</span>
-                            <span>{subtarefa.status}</span>
-                            <div className="flex space-x-2">
-                              <button
-                                onClick={() => handleEditSubtask(subtarefa)}
-                                className="text-yellow-500 hover:text-yellow-700 transition-colors duration-200"
-                              >
-                                <FaEdit />
-                              </button>
-                              <button
-                                onClick={() => handleDeleteSubtask(subtarefa)}
-                                className="text-red-500 hover:text-red-700 transition-colors duration-200"
-                              >
-                                <FaTrash />
-                              </button>
-                            </div>
-                          </div>
-                        ))}
+                      <table className="min-w-full bg-white rounded-lg">
+                        <thead>
+                          <tr className="bg-gray-200">
+                            <th className="px-4 py-2 text-left text-sm font-bold text-gray-700">Título</th>
+                            <th className="px-4 py-2 text-left text-sm font-bold text-gray-700">Responsável</th>
+                            <th className="px-4 py-2 text-left text-sm font-bold text-gray-700">Prazo</th>
+                            <th className="px-4 py-2 text-left text-sm font-bold text-gray-700">Status</th>
+                            <th className="px-4 py-2 text-center text-sm font-bold text-gray-700">Ações</th>
+                          </tr>
+                        </thead>
+                        <tbody>
+                          {filteredSubtarefas
+                            .filter((subtarefa) => subtarefa.tarefaId === tarefa.id)
+                            .map((subtarefa) => (
+                              <tr key={subtarefa.id} className="border-b">
+                                <td className="px-4 py-2 text-sm text-gray-800">{subtarefa.titulo}</td>
+                                <td className="px-4 py-2 text-sm text-gray-800">{subtarefa.responsavel}</td>
+                                <td className="px-4 py-2 text-sm text-gray-800">{subtarefa.prazo}</td>
+                                <td className="px-4 py-2">
+                                  <span
+                                    className={`px-2 py-1 rounded-full text-xs font-semibold ${
+                                      statusStyles[subtarefa.status as keyof typeof statusStyles]
+                                    }`}
+                                  >
+                                    {subtarefa.status}
+                                  </span>
+                                </td>
+                                <td className="px-4 py-2 text-center space-x-2">
+                                  <button
+                                    onClick={() => handleEditSubtask(subtarefa)}
+                                    className="text-yellow-500 hover:text-yellow-700 transition-colors duration-200"
+                                  >
+                                    <FaEdit />
+                                  </button>
+                                  <button
+                                    onClick={() => handleDeleteSubtask(subtarefa)}
+                                    className="text-red-500 hover:text-red-700 transition-colors duration-200"
+                                  >
+                                    <FaTrash />
+                                  </button>
+                                </td>
+                              </tr>
+                            ))}
+                        </tbody>
+                      </table>
                       <button
                         onClick={() => handleAddSubtask(tarefa.id)}
-                        className="bg-blue-500 text-white px-4 py-2 mt-4 rounded"
+                        className="bg-blue-500 text-white px-4 py-2 mt-4 rounded hover:bg-blue-600 transition-colors duration-200 w-max self-end"
                       >
-                        Incluir Subtarefa
+                        + Incluir Subtarefa
                       </button>
                     </div>
                   </td>
