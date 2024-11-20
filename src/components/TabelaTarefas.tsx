@@ -181,14 +181,6 @@ const TabelaTarefas: React.FC<TabelaTarefasProps> = ({ tarefas, onDelete, onAdd,
   const handleSubtaskSubmit = (e: React.FormEvent) => {
     e.preventDefault();
     if (novaSubtarefa.titulo && novaSubtarefa.prazo && novaSubtarefa.responsavel) {
-      if (dayjs(novaSubtarefa.prazo).isBefore(dayjs())) {
-        alert("A data de vencimento não pode ser anterior à data atual.");
-        return;
-      }
-      if (subtarefas.some(sub => sub.titulo.toLowerCase() === novaSubtarefa.titulo.toLowerCase() && sub.tarefaId === novaSubtarefa.tarefaId)) {
-        alert("O título da subtarefa não pode estar duplicado dentro da mesma tarefa principal.");
-        return;
-      }
       if (subtarefaParaEditar) {
         setSubtarefas((prevSubtarefas) =>
           prevSubtarefas.map((sub) =>
@@ -317,8 +309,8 @@ const TabelaTarefas: React.FC<TabelaTarefasProps> = ({ tarefas, onDelete, onAdd,
                 <tr key={`subtasks-${tarefa.id}`} className="bg-gray-100">
                   <td colSpan={7} className="p-4">
                     <div className="flex flex-col">
-                      <div className="flex items-center border rounded p-2 mb-4 bg-gray-100">
-                        <FiSearch className="mr-2 text-gray-400" />
+                      <div className="flex items-center border rounded-lg p-2 mb-4 bg-gray-100">
+                        <FiSearch className="mr-2 w-20 text-gray-400" />
                         <input
                           type="text"
                           name="titulo"
@@ -331,7 +323,7 @@ const TabelaTarefas: React.FC<TabelaTarefasProps> = ({ tarefas, onDelete, onAdd,
                           name="status"
                           value={filtrosSubtarefas.status}
                           onChange={handleFilterChange}
-                          className="p-2 border-r outline-none"
+                          className="p-2 border border-gray-100 outline-none"
                         >
                           <option value="">Status</option>
                           <option value="Pendente">Pendente</option>

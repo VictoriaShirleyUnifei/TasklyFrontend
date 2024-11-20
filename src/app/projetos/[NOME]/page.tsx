@@ -151,8 +151,8 @@ export default function DetalhesProjeto() {
       <div className="py-4">
         <h2 className="text-2xl font-bold mb-6 text-primary">Tarefas do Projeto</h2>
 
-        <div className="flex items-center border rounded p-2 mb-4 bg-gray-100">
-          <FiSearch className="mr-2 text-gray-400" />
+        <div className="flex items-center border rounded-lg p-2 mb-4 bg-gray-100">
+          <FiSearch className="mr-2 w-20 text-gray-400" />
           <input
             type="text"
             name="titulo"
@@ -165,7 +165,7 @@ export default function DetalhesProjeto() {
             name="status"
             value={filtros.status}
             onChange={handleFilterChange}
-            className="p-2 border-r outline-none"
+            className="p-2 border border-gray-100 outline-none"
           >
             <option value="">Status</option>
             <option value="Pendente">Pendente</option>
