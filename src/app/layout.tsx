@@ -1,12 +1,12 @@
 import type { Metadata } from "next";
 import localFont from "next/font/local";
 import "./globals.css";
+import { TarefasProvider } from "@/context/TarefasContext";
 
-// Defina o peso correto se a fonte Poppins tiver opções específicas, como "400" para regular e "700" para bold
 const poppins = localFont({
   src: "./fonts/Poppins-Regular.ttf",
   variable: "--font-poppins",
-  weight: "400 900", // Ajuste este valor conforme necessário
+  weight: "400 900", 
 });
 
 export const metadata: Metadata = {
@@ -22,7 +22,7 @@ export default function RootLayout({
   return (
     <html lang="en">
       <body className={`${poppins.variable} antialiased`}>
-        {children}
+        <TarefasProvider>{children}</TarefasProvider>
       </body>
     </html>
   );

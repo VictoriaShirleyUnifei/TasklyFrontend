@@ -10,11 +10,11 @@ import Toast from "@/components/Toast";
 import IncluirProjetoModal from "@/components/ModalIncluirProjetos";
 import Footer from "@/components/Footer";
 import { FaPlus } from "react-icons/fa";
-
 import IncluirTarefasModal from "@/components/ModalIncluirTarefas";
 import EditarTarefasModal from "@/components/ModalEditarTarefas";
 import ExcluirTarefasModal from "@/components/ModalExcluirTarefas";
 import VerDetalhesTarefasModal from "@/components/ModalDetalhesTarefas";
+import { tarefasMock } from "@/mocks/tarefasMock"; // Importando o mock de tarefas
 
 interface Tarefa {
   id: number;
@@ -112,37 +112,11 @@ const App: React.FC = () => {
   };
 
   const handleDetailClick = (projeto: LinhaTabela) => {
-    const tarefasMock: Tarefa[] = [
-      {
-        id: 1, // Adicione um id único para cada tarefa
-        titulo: "Análise de Requisitos",
-        descricao: "Descrição da tarefa", // Descrição pode ser opcional
-        responsavel: "Ana",
-        status: "Concluída",
-        prazo: dayjs("2023-05-20").format("DD/MM/YYYY"),
-        projeto: "Projeto A", // Adicione o nome do projeto
-      },
-      {
-        id: 2,
-        titulo: "Desenvolvimento",
-        descricao: "Descrição da tarefa", // Descrição pode ser opcional
-        responsavel: "Carlos",
-        status: "Em andamento",
-        prazo: dayjs("2023-07-15").format("DD/MM/YYYY"),
-        projeto: "Projeto B",
-      },
-      {
-        id: 3,
-        titulo: "Testes",
-        descricao: "Descrição da tarefa", // Descrição pode ser opcional
-        responsavel: "Beatriz",
-        status: "Pendente",
-        prazo: dayjs("2023-08-01").format("DD/MM/YYYY"),
-        projeto: "Projeto C",
-      },
-    ];
-
-    setTarefasProjeto(tarefasMock);
+    // Filtrar as tarefas pelo projeto selecionado
+    const tarefasDoProjeto = tarefasMock.filter(
+      (tarefa) => tarefa.projeto === projeto.nome
+    );
+    setTarefasProjeto(tarefasDoProjeto);
     setMostrarDetalhes(true);
   };
 
