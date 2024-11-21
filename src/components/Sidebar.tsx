@@ -7,11 +7,14 @@ import { FaRegFolder } from "react-icons/fa";
 import { BsPerson } from "react-icons/bs";
 import { VscGraph } from "react-icons/vsc";
 import { FiChevronLeft, FiChevronRight } from "react-icons/fi";
+import { IoSettingsOutline } from "react-icons/io5";
+import { FiChevronDown, FiChevronUp } from "react-icons/fi";
 
 export default function Sidebar() {
   const router = useRouter();
   const [isExpanded, setIsExpanded] = useState(true);
   const [currentRoute, setCurrentRoute] = useState("");
+  const [isConfigExpanded, setIsConfigExpanded] = useState(false);
 
   // Atualize a rota atual apenas no lado do cliente
   useEffect(() => {
@@ -26,6 +29,11 @@ export default function Sidebar() {
   // Função para alternar a expansão da sidebar
   const toggleSidebar = () => {
     setIsExpanded(!isExpanded);
+  };
+
+  // Função para alternar a expansão do submenu de configurações
+  const toggleConfigSubmenu = () => {
+    setIsConfigExpanded(!isConfigExpanded);
   };
 
   return (
@@ -103,6 +111,56 @@ export default function Sidebar() {
           <VscGraph size={24} />
           {isExpanded && <p className="pl-2">Relatórios</p>}
         </div>
+
+        {/* Navegação para Configurações */}
+        <div
+          className={`flex items-center gap-2 p-2 rounded cursor-pointer w-full ${
+            isActive("/configuracoes")
+              ? "text-primary bg-white/10"
+              : "hover:text-primary hover:bg-white/10"
+          }`}
+          onClick={toggleConfigSubmenu}
+        >
+          <IoSettingsOutline size={24} />
+          {isExpanded && <p className="pl-2">Configurações</p>}
+          {isExpanded && (isConfigExpanded ? <FiChevronUp /> : <FiChevronDown />)}
+        </div>
+
+        {/* Submenu de Configurações */}
+        {isConfigExpanded && isExpanded && (
+          <div className="flex flex-col gap-2 ml-8">
+            <div
+              className={`flex items-center gap-2 p-2 rounded cursor-pointer w-full ${
+                isActive("/configuracoes/status")
+                  ? "text-primary bg-white/10"
+                  : "hover:text-primary hover:bg-white/10"
+              }`}
+              onClick={() => router.push("/configuracoes/configurarStatus")}
+            >
+              <p>Configurar Status</p>
+            </div>
+            <div
+              className={`flex items-center gap-2 p-2 rounded cursor-pointer w-full ${
+                isActive("/configuracoes/usuarios")
+                  ? "text-primary bg-white/10"
+                  : "hover:text-primary hover:bg-white/10"
+              }`}
+              onClick={() => router.push("/configuracoes/usuarios")}
+            >
+              <p>Configurar Usuários</p>
+            </div>
+            <div
+              className={`flex items-center gap-2 p-2 rounded cursor-pointer w-full ${
+                isActive("/configuracoes/clientes")
+                  ? "text-primary bg-white/10"
+                  : "hover:text-primary hover:bg-white/10"
+              }`}
+              onClick={() => router.push("/configuracoes/clientes")}
+            >
+              <p>Configurar Clientes</p>
+            </div>
+          </div>
+        )}
       </div>
     </div>
   );
