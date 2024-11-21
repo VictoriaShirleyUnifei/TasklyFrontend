@@ -15,6 +15,7 @@ import EditarTarefasModal from "@/components/ModalEditarTarefas";
 import ExcluirTarefasModal from "@/components/ModalExcluirTarefas";
 import VerDetalhesTarefasModal from "@/components/ModalDetalhesTarefas";
 import { tarefasMock } from "@/mocks/tarefasMock"; // Importando o mock de tarefas
+import BaseLayout from "@/components/BaseLayout";
 
 interface Tarefa {
   id: number;
@@ -174,15 +175,9 @@ const App: React.FC = () => {
   const existingProjectNames = dados.map((proj) => proj.nome);
 
   return (
-    <div className="flex flex-col min-h-screen bg-gray-100">
-      <div className="flex flex-1">
-        <Sidebar />
-
-        <div className="flex-1 p-8 space-y-4">
-          <h1 className="text-4xl font-bold text-customGray font-poppins">
-            Gerenciamento de Projetos
-          </h1>
-
+    <BaseLayout title="Gerenciamento de Projetos">
+      <div className="flex flex-col min-h-screen bg-gray-100">
+        <div className="flex-1 space-y-4">
           <h2 className="text-3xl font-bold text-customYellow font-poppins mt-1">
             Projetos Cadastrados
           </h2>
@@ -317,7 +312,7 @@ const App: React.FC = () => {
       </div>
       <Footer />
       {showToast && <Toast message={toastMessage} show={showToast} />}
-    </div>
+    </BaseLayout>
   );
 };
 

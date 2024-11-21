@@ -3,6 +3,7 @@
 import React from 'react';
 import Sidebar from '@/components/Sidebar';
 import Footer from '@/components/Footer';
+import Header from './Header';
 
 interface BaseLayoutProps {
   title: string;
@@ -18,6 +19,7 @@ const BaseLayout: React.FC<BaseLayoutProps> = ({ title, children }) => {
 
         {/* Conteúdo principal com título dinâmico */}
         <div className="flex-1 p-8 space-y-4">
+          <Header />
           <h1 className="text-4xl font-bold text-customGray font-poppins">{title}</h1>
           {children}
         </div>
