@@ -135,7 +135,7 @@ export default function Sidebar() {
                   ? "text-primary bg-white/10"
                   : "hover:text-primary hover:bg-white/10"
               }`}
-              onClick={() => router.push("/configuracoes/configurarStatus")}
+              onClick={() => router.push("/configuracoes/configurar-status")}
             >
               <p>Configurar Status</p>
             </div>
@@ -145,7 +145,7 @@ export default function Sidebar() {
                   ? "text-primary bg-white/10"
                   : "hover:text-primary hover:bg-white/10"
               }`}
-              onClick={() => router.push("/configuracoes/usuarios")}
+              onClick={() => router.push("/configuracoes/configurar-usuarios")}
             >
               <p>Configurar Usuários</p>
             </div>
@@ -155,7 +155,7 @@ export default function Sidebar() {
                   ? "text-primary bg-white/10"
                   : "hover:text-primary hover:bg-white/10"
               }`}
-              onClick={() => router.push("/configuracoes/clientes")}
+              onClick={() => router.push("/configuracoes/configurar-clientes")}
             >
               <p>Configurar Clientes</p>
             </div>
