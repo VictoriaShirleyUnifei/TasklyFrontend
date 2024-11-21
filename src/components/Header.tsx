@@ -7,6 +7,9 @@ export default function Header() {
       <div className="flex flex-row items-center justify-between mb-12">
         <div>Perfil Administrador</div>
         <div>
+            
+        </div>
+        <div>
           <IoSettingsOutline size={28} />
         </div>
       </div>
