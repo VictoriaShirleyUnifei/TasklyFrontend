@@ -107,11 +107,7 @@ const ConfiguracoesStatus: React.FC = () => {
   return (
     <div className="flex flex-col min-h-screen bg-gray-100">
       <BaseLayout title="Configurar Status">
-        <div className="flex-1 p-8 space-y-4">
-          <h1 className="text-4xl font-bold text-customGray font-poppins">
-            Configuração de Status
-          </h1>
-
+        <div className="flex-1 space-y-4">
           <Filtro textoFiltro={textoFiltro} definirTextoFiltro={definirTextoFiltro} />
 
           <Tabela
