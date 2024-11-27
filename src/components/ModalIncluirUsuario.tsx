@@ -13,7 +13,7 @@ interface IncluirUsuarioModalProps {
 }
 
 const cargosDisponiveis = ["Gerente", "Analista", "Desenvolvedor", "Tester"];
-const permissoesDisponiveis = ["Administrador", "Usuário"];
+const permissoesDisponiveis = ["Administrador", "Usuário", "Cliente"];
 
 const IncluirUsuarioModal: React.FC<IncluirUsuarioModalProps> = ({ onClose, onSave }) => {
   const [nome, setNome] = useState<string>("");
