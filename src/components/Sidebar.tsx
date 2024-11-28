@@ -145,7 +145,7 @@ export default function Sidebar() {
                   ? "text-primary bg-white/10"
                   : "hover:text-primary hover:bg-white/10"
               }`}
-              onClick={() => router.push("/configuracoes/configurar-usuarios")}
+              onClick={() => router.push("/configuracoes/configurar-usuario")}
             >
               <p>Configurar Usuários</p>
             </div>
