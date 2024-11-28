@@ -14,8 +14,8 @@ const FiltroUsuario: React.FC<FiltroUsuarioProps> = ({ textoFiltro, definirTexto
           type="text"
           value={textoFiltro}
           onChange={(e) => definirTextoFiltro(e.target.value)}
-          placeholder="Digite o nome, email ou cargo do usuário"
-          className="pl-12 pr-4 py-3 border border-gray-200 rounded-full shadow-sm focus:outline-none focus:ring-2 focus:ring-[#F0CF8B] focus:border-[#F0CF8B] w-full bg-white text-gray-700 placeholder-gray-400"
+          placeholder="Digite o nome, email ou cargo"
+          className="pl-12 pr-90 py-3 border border-gray-200 rounded-full shadow-sm focus:outline-none focus:ring-2 focus:ring-[#F0CF8B] focus:border-[#F0CF8B] w-full bg-white text-gray-700 placeholder-gray-400"
         />
         <div className="absolute inset-y-0 left-0 flex items-center pl-4 pointer-events-none">
           <svg
