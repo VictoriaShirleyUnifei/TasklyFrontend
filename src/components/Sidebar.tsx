@@ -111,56 +111,6 @@ export default function Sidebar() {
           <VscGraph size={24} />
           {isExpanded && <p className="pl-2">Relatórios</p>}
         </div>
-
-        {/* Navegação para Configurações */}
-        <div
-          className={`flex items-center gap-2 p-2 rounded cursor-pointer w-full ${
-            isActive("/configuracoes")
-              ? "text-primary bg-white/10"
-              : "hover:text-primary hover:bg-white/10"
-          }`}
-          onClick={toggleConfigSubmenu}
-        >
-          <IoSettingsOutline size={24} />
-          {isExpanded && <p className="pl-2">Configurações</p>}
-          {isExpanded && (isConfigExpanded ? <FiChevronUp /> : <FiChevronDown />)}
-        </div>
-
-        {/* Submenu de Configurações */}
-        {isConfigExpanded && isExpanded && (
-          <div className="flex flex-col gap-2 ml-8">
-            <div
-              className={`flex items-center gap-2 p-2 rounded cursor-pointer w-full ${
-                isActive("/configuracoes/status")
-                  ? "text-primary bg-white/10"
-                  : "hover:text-primary hover:bg-white/10"
-              }`}
-              onClick={() => router.push("/configuracoes/configurar-status")}
-            >
-              <p>Configurar Status</p>
-            </div>
-            <div
-              className={`flex items-center gap-2 p-2 rounded cursor-pointer w-full ${
-                isActive("/configuracoes/usuarios")
-                  ? "text-primary bg-white/10"
-                  : "hover:text-primary hover:bg-white/10"
-              }`}
-              onClick={() => router.push("/configuracoes/configurar-usuario")}
-            >
-              <p>Configurar Usuários</p>
-            </div>
-            <div
-              className={`flex items-center gap-2 p-2 rounded cursor-pointer w-full ${
-                isActive("/configuracoes/clientes")
-                  ? "text-primary bg-white/10"
-                  : "hover:text-primary hover:bg-white/10"
-              }`}
-              onClick={() => router.push("/configuracoes/configurar-clientes")}
-            >
-              <p>Configurar Clientes</p>
-            </div>
-          </div>
-        )}
       </div>
     </div>
   );
