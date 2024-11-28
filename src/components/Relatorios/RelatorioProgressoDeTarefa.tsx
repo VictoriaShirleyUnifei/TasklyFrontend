@@ -13,8 +13,8 @@ import {
 } from "chart.js";
 import { FaFilePdf, FaFileExcel, FaPlus, FaMinus } from "react-icons/fa";
 import dayjs from "dayjs";
-import BaseLayout from "@/components/BaseLayout";
 import { tarefasMock, subtarefasMock } from "@/mocks/tarefasMock";
+import BaseLayout from "../Generico/BaseLayout";
 
 // Registrando componentes do Chart.js
 ChartJS.register(
@@ -26,7 +26,7 @@ ChartJS.register(
   Legend
 );
 
-const RelatoriosPage: React.FC = () => {
+const RelatorioProgressoDeTarefa: React.FC = () => {
   const [tarefas, setTarefas] = useState(tarefasMock);
   const [subtarefas, setSubtarefas] = useState(subtarefasMock);
   const [tarefasExpandidas, setTarefasExpandidas] = useState<number[]>([]);
@@ -147,7 +147,7 @@ const RelatoriosPage: React.FC = () => {
   });
 
   return (
-    <BaseLayout title="Relatórios">
+    <BaseLayout title="Relatório de Progresso de Tarefas">
       <div className="bg-gray-100 min-h-screen">
         <div className="bg-white p-6 rounded-lg shadow-md mt-4">
           <h2 className="text-2xl font-semibold mb-4">Filtros</h2>
@@ -344,4 +344,4 @@ const RelatoriosPage: React.FC = () => {
   );
 };
 
-export default RelatoriosPage;
+export default RelatorioProgressoDeTarefa;

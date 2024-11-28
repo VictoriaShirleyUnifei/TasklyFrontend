@@ -1,13 +1,13 @@
 "use client";
 
 import React, { useState } from "react";
-import BaseLayout from "@/components/BaseLayout";
 import ModalIncluirCliente from "@/components/ModalIncluirCliente";
 import ModalEditarCliente from "@/components/ModalEditarCliente";
 import ModalExcluirCliente from "@/components/ModalExcluirCliente";
 import FiltroCliente from "@/components/FiltroCliente";
 import TabelaClientes from "@/components/TabelaClientes";
 import Footer from "@/components/Footer";
+import BaseLayout from "@/components/Generico/BaseLayout";
 
 interface Cliente {
   id: string;

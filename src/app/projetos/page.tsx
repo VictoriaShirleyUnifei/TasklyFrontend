@@ -15,7 +15,7 @@ import EditarTarefasModal from "@/components/ModalEditarTarefas";
 import ExcluirTarefasModal from "@/components/ModalExcluirTarefas";
 import VerDetalhesTarefasModal from "@/components/ModalDetalhesTarefas";
 import { tarefasMock } from "@/mocks/tarefasMock"; // Importando o mock de tarefas
-import BaseLayout from "@/components/BaseLayout";
+import BaseLayout from "@/components/Generico/BaseLayout";
 
 interface Tarefa {
   id: number;

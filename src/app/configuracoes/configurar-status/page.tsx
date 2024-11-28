@@ -1,7 +1,6 @@
 "use client";
 
 import React, { useState } from "react";
-import BaseLayout from "@/components/BaseLayout";
 import dayjs from "dayjs"; // Import dayjs para formatação de datas
 import Filtro from "@/components/FiltroStatus"; // Novo componente para filtro dos status
 import Tabela from "@/components/TabelaStatus"; // Novo componente para a tabela de status
@@ -12,6 +11,7 @@ import Sidebar from "@/components/Sidebar";
 import Toast from "@/components/Toast";
 import Footer from "@/components/Footer";
 import { FaPlus } from "react-icons/fa";
+import BaseLayout from "@/components/Generico/BaseLayout";
 
 const statusStyles = {
   "Cinza (Pendentes)": "bg-gray-300 text-gray-700",

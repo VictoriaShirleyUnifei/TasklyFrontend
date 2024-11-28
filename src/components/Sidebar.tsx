@@ -14,7 +14,7 @@ export default function Sidebar() {
   const router = useRouter();
   const [isExpanded, setIsExpanded] = useState(true);
   const [currentRoute, setCurrentRoute] = useState("");
-  const [isConfigExpanded, setIsConfigExpanded] = useState(false);
+  const [isRelatorioExpanded, setIsRelatorioExpanded] = useState(false);
 
   // Atualize a rota atual apenas no lado do cliente
   useEffect(() => {
@@ -32,8 +32,8 @@ export default function Sidebar() {
   };
 
   // Função para alternar a expansão do submenu de configurações
-  const toggleConfigSubmenu = () => {
-    setIsConfigExpanded(!isConfigExpanded);
+  const toggleRelatorioSubmenu = () => {
+    setIsRelatorioExpanded(!isRelatorioExpanded);
   };
 
   return (
@@ -99,18 +99,45 @@ export default function Sidebar() {
           {isExpanded && <p className="pl-2">Clientes</p>}
         </div>
 
-        {/* Navegação para Relatórios */}
+        {/* Navegação para Configurações */}
         <div
           className={`flex items-center gap-2 p-2 rounded cursor-pointer w-full ${
-            isActive("/relatorios")
+            isActive("/configuracoes")
               ? "text-primary bg-white/10"
               : "hover:text-primary hover:bg-white/10"
           }`}
-          onClick={() => router.push("/relatorios")}
+          onClick={toggleRelatorioSubmenu}
         >
           <VscGraph size={24} />
           {isExpanded && <p className="pl-2">Relatórios</p>}
+          {isExpanded && (isRelatorioExpanded ? <FiChevronUp /> : <FiChevronDown />)}
         </div>
+
+        {/* Submenu de Relatórios */}
+        {isRelatorioExpanded && isExpanded && (
+          <div className="flex flex-col gap-2 ml-8">
+            <div
+              className={`flex items-center gap-2 p-2 rounded cursor-pointer w-full ${
+                isActive("/relatorios/progresso-de-tarefas")
+                  ? "text-primary bg-white/10"
+                  : "hover:text-primary hover:bg-white/10"
+              }`}
+              onClick={() => router.push("/relatorios/progresso-de-tarefas")}
+            >
+              <p>Progresso de Tarefas</p>
+            </div>
+            <div
+              className={`flex items-center gap-2 p-2 rounded cursor-pointer w-full ${
+                isActive("/relatorios/carga-de-trabalho")
+                  ? "text-primary bg-white/10"
+                  : "hover:text-primary hover:bg-white/10"
+              }`}
+              onClick={() => router.push("/relatorios/carga-de-trabalho")}
+            >
+              <p>Carga de Trabalho</p>
+            </div>
+          </div>
+        )}
       </div>
     </div>
   );

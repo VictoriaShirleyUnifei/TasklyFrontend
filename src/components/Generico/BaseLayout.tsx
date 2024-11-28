@@ -3,7 +3,7 @@
 import React from 'react';
 import Sidebar from '@/components/Sidebar';
 import Footer from '@/components/Footer';
-import Header from './Header';
+import Header from '../Header';
 
 interface BaseLayoutProps {
   title: string;

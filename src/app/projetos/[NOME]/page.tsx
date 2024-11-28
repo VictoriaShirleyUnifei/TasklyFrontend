@@ -1,5 +1,4 @@
 "use client";
-import BaseLayout from "@/components/BaseLayout";
 import { useParams } from "next/navigation";
 import React, { useState, useEffect } from "react";
 import dayjs from "dayjs"; // Import dayjs para formatação de datas
@@ -8,6 +7,7 @@ import Toast from "@/components/Toast";
 import { FiSearch } from "react-icons/fi";
 import Modal from "@/components/ModalEditarTarefas";
 import DeleteTaskModal from "@/components/ModalExcluirTarefas";
+import BaseLayout from "@/components/Generico/BaseLayout";
 
 interface Tarefa {
   id: number;

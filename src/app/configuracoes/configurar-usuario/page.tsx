@@ -1,7 +1,6 @@
 "use client";
 
 import React, { useState } from "react";
-import BaseLayout from "@/components/BaseLayout";
 import ModalIncluirUsuario from "@/components/ModalIncluirUsuario";
 import ModalEditarUsuario from "@/components/ModalEditarUsuario";
 import ModalDeleteUsuario from "@/components/ModalDeleteUsuario";
@@ -10,6 +9,7 @@ import { FaPlus } from "react-icons/fa";
 import FiltroUsuario from "@/components/FiltroUsuarios";
 import TabelaUsuario from "@/components/TabelaUsuarios";
 import { usuariosMock } from "@/mocks/usuariosMock";
+import BaseLayout from "@/components/Generico/BaseLayout";
 
 interface Usuario {
   id: string;
